@@ -1,45 +1,36 @@
-
-
-ORG 25000
+                ORG 25000
 
 start
 
-; STEP1: 	STARTING SET UP
+                DI
+                CALL PLAYER_OFF
 
-		DI
-		CALL	PLAYER_OFF
+                include "wyzplayer.asm"
+                include "billiejean.mus.asm"
+SONG_0:         incbin "billiejean.mus"
 
+TABLA_SONG:     DW SONG_0
 
+BUFFER_CANAL_A: DEFS 80
 
-; STEP2:	MUSIC RAM BUFFER
+                CALL PLAYER_OFF
 
-                LD      HL,#D000        	;* $40 BYTES FREE RAM MEMORY
-                LD      [CANAL_A],HL		;* $10 BYTES x CHANNEL SHOULD BE ENOUGHT
-
-                LD      HL,#D010
-                LD      [CANAL_B],HL
-
-                LD      HL,#D020
-                LD      [CANAL_C],HL
-
-                LD      HL,#D030
-                LD      [CANAL_P],HL
-
-
-                LD      A,0             	;* CANCION N� 0
-                CALL    CARGA_CANCION
-
-                INCLUDE "billiejean.mus.asm"
-SONG_0:         INCBIN "billiejean.mus"
-
-TABLA_SONG:     DW    SONG_0   ;
-
-
-                INCLUDE "WYZPROPLAY47c_ZX.ASM"
+                DI
+                CALL PLAYER_OFF
+                LD HL, BUFFER_CANAL_A
+                LD [CANAL_A], HL
+                LD HL, BUFFER_CANAL_A + 20
+                LD [CANAL_B], HL
+                LD HL, BUFFER_CANAL_A + 40
+                LD [CANAL_C], HL
+                LD HL, BUFFER_CANAL_A + 60
+                LD [CANAL_P], HL
+                LD A, 0 ; Cancion 0
+                CALL CARGA_CANCION
 
                 EI
 LOOP:           HALT
-                CALL    INICIO            ;CALL INICIO 1/50s
-                JR    LOOP
+                CALL INICIO ; CALL INICIO 1/50s
+                JR LOOP
 
 end start
